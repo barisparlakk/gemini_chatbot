@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #chat-container { max-width: 600px; margin: auto; }
+        #chat-box { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; }
+        #input-box { width: 80%; padding: 5px; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h2>Chatbot</h2>
+        <div id="chat-box"></div>
+        <input type="text" id="input-box" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const userId = "user_" + Math.random().toString(36).substr(2, 9);
+        const chatBox = document.getElementById("chat-box");
+        const inputBox = document.getElementById("input-box");
+
+        function addMessage(sender, text) {
+            const msgDiv = document.createElement("div");
+            msgDiv.textContent = `${sender}: ${text}`;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = inputBox.value.trim();
+            if (!message) return;
+
+            addMessage("You", message);
+            inputBox.value = "";
+
+            const formData = new FormData();
+            formData.append("user_id", userId);
+            formData.append("message", message);
+
+            const response = await fetch("/chat/", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+            addMessage("Bot", data.response);
+        }
+
+        inputBox.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+    </script>
+</body>
+</html>
