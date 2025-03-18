@@ -13,7 +13,7 @@ os.getenv("SUPABASE_KEY")
 
 #Gemini Setup
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-pro")
+model = genai.GenerativeModel("gemini-2.0-pro-exp-02-05")
 
 def get_conversation_history(user_id):
     response = supabase.table("Conversations").select("message,response").eq("user_id", user_id).order("created_at").execute()
