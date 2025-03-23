@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from supabase import create_client, Client
 import google.generativeai as genai
 from dotenv import load_dotenv
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 load_dotenv()
 
@@ -48,3 +50,16 @@ def chat(request):
         save_conversation(user_id, message, response)
         return JsonResponse({"response":response})
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+@csrf_exempt
+def chat_api(request):
+    if request.method == 'GET':
+        return JsonResponse({
+            'message': 'Welcome to the Chat API!'
+        })
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        # Burada chat işlemlerini yapabilirsiniz
+        return JsonResponse({
+            'message': f'Received: {data.get("message", "")}'
+        })
